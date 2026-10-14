@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "campus-customs": {
+      "command": ".venv/Scripts/python.exe",
+      "args": ["-m", "mcp_server.server", "--transport", "stdio"],
+      "env": {}
+    }
+  }
+}

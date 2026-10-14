@@ -1,0 +1,197 @@
+{
+  "generated_at": "2026-10-12T03:28:28+00:00",
+  "mcp_server": "campus-customs",
+  "mcp_config": ".mcp.json",
+  "transport": "stdio subprocess, launched from .mcp.json",
+  "database": "data/campus_customs_new.db",
+  "database_state": "reset to the pristine data/campus_customs.db before these calls",
+  "tools_exposed": [
+    "assign_ticket",
+    "check_inventory",
+    "draft_message",
+    "get_approval",
+    "get_cash",
+    "get_policies",
+    "get_pricing",
+    "get_shop_overview",
+    "get_ticket",
+    "get_vendor_status",
+    "list_approvals",
+    "list_drafts",
+    "list_invoices",
+    "list_leases",
+    "list_payments",
+    "list_purchase_orders",
+    "list_tickets",
+    "list_vendors",
+    "low_stock_report",
+    "quote_discount",
+    "request_payment",
+    "request_purchase_order",
+    "reserve_stock",
+    "supervisor_resolve_approval",
+    "update_ticket"
+  ],
+  "all_checks_match_database": true,
+  "checks": [
+    {
+      "ticket": 101,
+      "prompt": "Ticket 101 is a customer order from Tauhid Zaman for one Classic Bulldog Tee in size S. Using the campus-customs MCP server, check how many of that exact SKU and size we actually have on the shelf right now.",
+      "tool": "check_inventory",
+      "arguments": {
+        "sku": "CC-TEE-WHITE",
+        "size": "S"
+      },
+      "output": {
+        "ok": true,
+        "inventory": [
+          {
+            "sku": "CC-TEE-WHITE",
+            "name": "Classic Bulldog Tee",
+            "size": "S",
+            "qty": 0,
+            "location": "Aisle B"
+          }
+        ]
+      },
+      "database_verification": {
+        "database": "campus_customs_new.db",
+        "query": "SELECT sku, name, size, qty, location FROM inventory WHERE sku = 'CC-TEE-WHITE' AND size = 'S'",
+        "rows": [
+          {
+            "sku": "CC-TEE-WHITE",
+            "name": "Classic Bulldog Tee",
+            "size": "S",
+            "qty": 0,
+            "location": "Aisle B"
+          }
+        ],
+        "matches_database": true
+      },
+      "what_it_proves": "The size-S row holds qty 0, so ticket 101 cannot be filled off the shelf and has to become a restock."
+    },
+    {
+      "ticket": 102,
+      "prompt": "Ticket 102 is the rent notice from Elm City Properties, which points at lease 1. Using the campus-customs MCP server, put the rent payment in front of me for approval -- do not pay it.",
+      "tool": "request_payment",
+      "arguments": {
+        "kind": "rent",
+        "ref_id": 1,
+        "amount": 2400.0,
+        "memo": "September rent for the Chapel Street shop, ticket 102",
+        "requested_by": "accounting",
+        "ticket_id": 102
+      },
+      "output": {
+        "ok": true,
+        "status": "pending_human_approval",
+        "approval_id": 1,
+        "message": "Payment of $2,400.00 for rent for Chapel Street shop is queued for the human supervisor. No money has moved. Do not assume it is paid.",
+        "approval": {
+          "id": 1,
+          "kind": "rent",
+          "ref_id": 1,
+          "ticket_id": 102,
+          "amount": 2400.0,
+          "account": "checking",
+          "memo": "September rent for the Chapel Street shop, ticket 102",
+          "payload": "{}",
+          "status": "pending",
+          "requested_by": "accounting",
+          "requested_at": "2026-10-12T03:28:27Z",
+          "decided_by": null,
+          "decided_at": null,
+          "decision_note": null,
+          "result": null
+        }
+      },
+      "database_verification": {
+        "database": "campus_customs_new.db",
+        "approval_row_created": {
+          "query": "SELECT id, kind, ref_id, ticket_id, amount, account, status, requested_by FROM approvals WHERE id = <approval_id>",
+          "rows": [
+            {
+              "id": 1,
+              "kind": "rent",
+              "ref_id": 1,
+              "ticket_id": 102,
+              "amount": 2400.0,
+              "account": "checking",
+              "status": "pending",
+              "requested_by": "accounting"
+            }
+          ]
+        },
+        "amount_matches_lease": {
+          "query": "SELECT id, space_name, landlord, monthly_rent, next_due FROM leases WHERE id = 1",
+          "rows": [
+            {
+              "id": 1,
+              "space_name": "Chapel Street shop",
+              "landlord": "Elm City Properties",
+              "monthly_rent": 2400.0,
+              "next_due": "2026-09-02"
+            }
+          ],
+          "requested_amount": 2400.0,
+          "matches_database": true
+        },
+        "no_money_moved": {
+          "query": "SELECT balance FROM cash_accounts WHERE name = 'checking'; SELECT COUNT(*) FROM payments",
+          "cash_before": 3400.0,
+          "cash_after": 3400.0,
+          "payments_rows": 0,
+          "balance_unchanged": true
+        },
+        "matches_database": true
+      },
+      "what_it_proves": "The $2,400 matches lease 1's monthly_rent exactly, the request landed in approvals as 'pending', and the balance is untouched with zero payment rows -- the agent could not pay it itself."
+    },
+    {
+      "ticket": 103,
+      "prompt": "Ticket 103 is the Yale AI Club asking for 20 navy hoodies in size M at a bulk discount. Using the campus-customs MCP server, work out whether 25% off still clears our 40% margin floor, and what the deepest discount we could actually offer is.",
+      "tool": "quote_discount",
+      "arguments": {
+        "sku": "CC-HOOD-NAVY",
+        "qty": 20,
+        "discount_pct": 25.0
+      },
+      "output": {
+        "ok": true,
+        "sku": "CC-HOOD-NAVY",
+        "qty": 20,
+        "list_price": 58.0,
+        "unit_cost": 22.0,
+        "discount_pct": 25.0,
+        "discounted_unit_price": 43.5,
+        "margin_per_unit": 21.5,
+        "gross_margin_pct": 49.43,
+        "order_revenue": 870.0,
+        "order_cost": 440.0,
+        "order_profit": 430.0,
+        "min_gross_margin_pct": 40.0,
+        "meets_margin_policy": true,
+        "max_discount_pct_allowed": 36.78,
+        "price_floor": 36.67
+      },
+      "database_verification": {
+        "database": "campus_customs_new.db",
+        "query": "SELECT sku, unit_cost, list_price FROM pricing WHERE sku = 'CC-HOOD-NAVY'",
+        "rows": [
+          {
+            "sku": "CC-HOOD-NAVY",
+            "unit_cost": 22.0,
+            "list_price": 58.0
+          }
+        ],
+        "recomputed_from_database": {
+          "discounted_unit_price": 43.5,
+          "gross_margin_pct": 49.43,
+          "max_discount_pct_allowed": 36.78
+        },
+        "matches_database": true
+      },
+      "what_it_proves": "Every figure is derived from CC-HOOD-NAVY's stored $22.00 cost and $58.00 list price -- 25% off yields a 49.43% margin (passes), and the ceiling is 36.78% before the 40% floor is breached."
+    }
+  ]
+}

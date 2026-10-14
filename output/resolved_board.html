@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campus Customs — Resolved Board</title>
+<style>
+  :root{
+    --bg:#08080b; --panel:#121216; --panel-2:#1a1a21; --line:#2a2a33;
+    --ink:#ececf1; --dim:#9a9aa8; --faint:#6a6a78;
+    --pink:#ff2d78; --pink-soft:#ff6fa5; --pink-dim:#5c1130; --ok:#3ddc97;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.65 "Segoe UI",-apple-system,system-ui,sans-serif;
+  }
+  header{
+    padding:34px 40px 24px; border-bottom:1px solid var(--line);
+    background:linear-gradient(170deg,#15070e 0%,var(--bg) 70%);
+  }
+  h1{margin:0; font-size:27px; letter-spacing:-.4px}
+  h1 span{color:var(--pink)}
+  .sub{color:var(--dim); margin-top:7px; font-size:14px}
+  .meta{margin-top:16px; display:flex; gap:10px; flex-wrap:wrap}
+  .chip{
+    background:var(--panel-2); border:1px solid var(--line); color:var(--dim);
+    padding:5px 13px; border-radius:999px; font-size:12.5px;
+  }
+  .chip b{color:var(--pink-soft); font-weight:600}
+  .chip.good b{color:var(--ok)}
+
+  main{padding:34px 40px 80px; max-width:1180px}
+
+  .shot{margin-bottom:46px}
+  .shot h2{font-size:19px; margin:0 0 3px}
+  .shot h2 .num{color:var(--faint); font-family:Consolas,monospace; font-size:15px; margin-right:8px}
+  .shot .line{color:var(--dim); font-size:13.5px; margin-bottom:6px}
+  .badge{
+    display:inline-block; font-size:10px; text-transform:uppercase; letter-spacing:.9px;
+    padding:3px 9px; border-radius:999px; font-weight:700;
+    background:rgba(61,220,151,.14); color:var(--ok); margin-left:9px; vertical-align:2px;
+  }
+  .outcome{
+    background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--pink);
+    border-radius:10px; padding:13px 16px; margin:14px 0 16px; font-size:13.5px;
+  }
+  .outcome b{color:var(--pink-soft)}
+  figure{margin:0}
+  img{
+    width:100%; display:block; border:1px solid var(--line); border-radius:12px;
+    box-shadow:0 22px 60px -30px #000;
+  }
+  figcaption{color:var(--faint); font-size:12px; margin-top:9px; font-family:Consolas,monospace}
+
+  table{border-collapse:collapse; width:100%; font-size:14px; margin:10px 0 0}
+  th,td{text-align:left; padding:9px 11px; border-bottom:1px solid var(--line)}
+  th{color:var(--faint); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.7px}
+  td.num{text-align:right; font-family:Consolas,monospace}
+  tr.total td{border-top:2px solid var(--pink-dim); border-bottom:none; font-weight:700}
+
+  .foot{
+    border-top:1px solid var(--line); margin-top:40px; padding-top:22px;
+    color:var(--faint); font-size:13px;
+  }
+  code{background:#000; color:var(--pink-soft); padding:1.5px 6px; border-radius:4px; font-size:12.5px; font-family:Consolas,monospace}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Campus Customs — <span>Resolved Board</span></h1>
+  <div class="sub">The React dashboard after the agent team worked all three tickets to completion.</div>
+  <div class="meta">
+    <span class="chip good">Tickets closed <b>3 / 3</b></span>
+    <span class="chip">Opening cash <b>$3,400.00</b></span>
+    <span class="chip">Closing cash <b>$152.00</b></span>
+    <span class="chip">Shop date <b>2026-08-31</b></span>
+    <span class="chip">Model <b>gpt-6-luna</b></span>
+    <span class="chip">Supervisor <b>Yunsik Jung</b></span>
+  </div>
+</header>
+
+<main>
+
+  <section class="shot">
+    <h2><span class="num">#101</span>Bulldog tee<span class="badge">resolved</span></h2>
+    <div class="line">Tauhid Zaman · 1 × CC-TEE-WHITE size S · handled by Inventory</div>
+    <div class="outcome">
+      Size S was at <b>0 on hand</b>, and Bulldog Print Co was refusing to ship over
+      the overdue <b>$840</b> invoice 501. Accounting queued the invoice, the
+      supervisor approved it, the vendor unblocked, and Inventory then queued an
+      <b>$8.00</b> purchase order for one tee — approved, arriving
+      <b>2026-09-05</b>. Customer Service drafted the reply to Tauhid; it was not sent.
+    </div>
+    <figure>
+      <img src="screenshots/ticket_101.jpg" alt="Dashboard showing ticket 101 resolved">
+      <figcaption>Ticket 101 selected · both approvals visible on the right, cash at $152.00</figcaption>
+    </figure>
+  </section>
+
+  <section class="shot">
+    <h2><span class="num">#102</span>Rent due<span class="badge">resolved</span></h2>
+    <div class="line">Elm City Properties · lease 1, Chapel Street shop · handled by Facilities</div>
+    <div class="outcome">
+      Facilities checked the lease rather than trusting the landlord's email, and
+      confirmed <b>$2,400.00</b> due <b>2026-09-02</b> — upcoming, not overdue, as of
+      the shop date. Accounting queued the payment, the supervisor approved it, and
+      the lease rolled forward to <b>2026-10-02</b>.
+    </div>
+    <figure>
+      <img src="screenshots/ticket_102.jpg" alt="Dashboard showing ticket 102 resolved">
+      <figcaption>Ticket 102 selected · the rent chain ran Boss → Facilities → Accounting</figcaption>
+    </figure>
+  </section>
+
+  <section class="shot">
+    <h2><span class="num">#103</span>Bulk hoodie discount<span class="badge">resolved</span></h2>
+    <div class="line">Yale AI Club · 20 × CC-HOOD-NAVY size M · handled by Accounting</div>
+    <div class="outcome">
+      Accounting computed the floor from the stored $22.00 cost and $58.00 list
+      price and queued a price override at <b>$36.67 per hoodie</b> (40.01% gross
+      margin, just inside the 40% policy), which the supervisor authorised — no cash
+      moved. Inventory found only <b>8 of 20</b> in stock, with the missing 12
+      costing <b>$264.00</b> against <b>$152.00</b> of cash: a <b>$112 gap</b>. The
+      team offered the 8 in stock at the approved price and explicitly declined to
+      promise the other 12. Customer Service drafted the reply to the club.
+    </div>
+    <figure>
+      <img src="screenshots/ticket_103.jpg" alt="Dashboard showing ticket 103 resolved">
+      <figcaption>Ticket 103 selected · the partial-fulfilment decision in the feed</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Cash, start to finish</h2>
+    <table>
+      <tr><th>Step</th><th>Ticket</th><th>Approved by</th><th style="text-align:right">Amount</th><th style="text-align:right">Balance</th></tr>
+      <tr><td>Opening balance after reset</td><td>—</td><td>—</td><td class="num">—</td><td class="num">$3,400.00</td></tr>
+      <tr><td>Invoice 501 — Bulldog Print Co, unblocks the vendor</td><td>101</td><td>Yunsik Jung</td><td class="num">−$840.00</td><td class="num">$2,560.00</td></tr>
+      <tr><td>Purchase order — 1 × CC-TEE-WHITE size S</td><td>101</td><td>Yunsik Jung</td><td class="num">−$8.00</td><td class="num">$2,552.00</td></tr>
+      <tr><td>September rent — Chapel Street shop</td><td>102</td><td>Yunsik Jung</td><td class="num">−$2,400.00</td><td class="num">$152.00</td></tr>
+      <tr><td>Price override — $36.67 per hoodie (no cash)</td><td>103</td><td>Yunsik Jung</td><td class="num">−$0.00</td><td class="num">$152.00</td></tr>
+      <tr class="total"><td>Closing balance</td><td>—</td><td>—</td><td class="num">−$3,248.00</td><td class="num">$152.00</td></tr>
+    </table>
+  </section>
+
+  <div class="foot">
+    Every figure above is read from <code>data/campus_customs_new.db</code>. The full
+    machine-readable record is in <code>resolved_tickets.json</code>, the
+    step-by-step execution log in <code>audit_trail.json</code>, and the
+    prediction-versus-outcome comparison in <code>desk_tickets.html</code>.
+  </div>
+
+</main>
+</body>
+</html>

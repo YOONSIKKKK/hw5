@@ -680,3 +680,80 @@ rather than generic statements:
 *No follow-up prompt was needed for this problem.*
 
 ---
+
+## Problem 11 — Submit to GitHub (5 points)
+
+### Initial prompt
+
+> **Problem 11: Submit to GitHub (5 points)**
+>
+> We need to push all of our code to a public GitHub repository to ensure the
+> graders can clone it. We must submit the repository URL on Canvas, and we
+> also need to save this exact URL inside a file named `output/github_url.txt`.
+>
+> It is highly important that we do not commit or push our real `.env` file to
+> the GitHub repository. However, we do need to include both database files
+> located in the `data/` directory (both the original database and our working
+> copy) so that the graders can easily execute our application.
+>
+> Furthermore, our `README.md` must clearly provide instructions on: how to
+> copy the original DB over to the working copy when a clean run is needed, how
+> to start the MCP server, how to launch the FastAPI backend, how to run the
+> React board, and how to properly reset the database before initiating a full
+> three-ticket run.
+
+### How it was carried out
+
+Before touching git, confirmed what actually needed protecting: this project
+had never had its own `.env` — `backend/config.py` loads the real key from the
+parent folder's `.env` (shared across this course's projects) — so there was
+nothing to accidentally stage. Wrote `.env.example` at the repo root
+documenting both load paths and which one wins for a fresh clone.
+
+Wrote `requirements.txt` from the working `.venv`'s exact `pip freeze`, with
+one deliberate edit: `pywin32` and `pywin32-ctypes` (pulled in transitively by
+`keyring`, not imported anywhere in this project's own code) were moved behind
+a `sys_platform == "win32"` marker so `pip install -r requirements.txt` does
+not fail outright on a grader's Mac or Linux machine.
+
+Wrote a root `.gitignore` covering `.env` (with an explicit `!.env.example`
+exception), `.venv/`/`__pycache__/`, `frontend/node_modules/` and
+`frontend/dist/`, the SQLite `-wal`/`-shm` sidecar files `reset_working_db()`
+already cleans up, `.claude/` (local vibe-coder config, not part of the
+deliverable), and the now-redundant `data.zip` — while leaving both
+`data/campus_customs.db` and `data/campus_customs_new.db` untouched so they
+commit normally, per the assignment's explicit instruction to include both.
+
+Wrote `README.md` as the actual entry point a grader would read first, with a
+numbered sequence: clone and install (Python `.venv` + `requirements.txt`,
+`npm install --prefix frontend`), set up `.env` from `.env.example`, **how to
+copy the original DB over the working copy** (both the `POST /api/reset` route
+and the equivalent one-line `reset_working_db()` call, with the exact
+mechanics — WAL checkpoint, sidecar cleanup, schema re-apply — named so a
+grader understands what "reset" actually does), then the three processes in
+order — **MCP server** (`python -m mcp_server.server --port 8787`), **FastAPI
+backend** (`uvicorn main:app --reload --port 8000` from `backend/`), **React
+board** (`npm run dev --prefix frontend`) — and finally how to drive a **full
+three-ticket run** (`python -m scripts.full_run`), explicitly stating that a
+reset must happen first since resolving all three tickets spends the
+simulated cash and leaves every ticket `resolved`.
+
+Ran `git init`, staged everything, and reviewed the exact 64-file `git status`
+output before committing — confirming both `.db` files were staged, and that
+no `.env`, `.venv/`, `node_modules/`, `__pycache__/`, `.claude/` or `data.zip`
+appeared. Created a public repository with the GitHub CLI
+(`gh repo create hw5 --public --source=. --push`), matching the `hw4` naming
+already used for this course's prior assignment, and pushed. Wrote the
+resulting URL to `output/github_url.txt` in a second commit.
+
+Verified rather than assumed the two things that actually matter for this
+problem: `gh repo view` reports `"visibility":"PUBLIC"`, an unauthenticated
+`GET` of `README.md` via `raw.githubusercontent.com` returns `200`, and the same
+unauthenticated request for `.env` returns `404` — proving the repository is
+both clonable by graders and free of the real key.
+
+*No follow-up prompt was needed for this problem. Submitting the URL on Canvas
+itself is a step only Yunsik can do — recorded here as the one remaining
+manual action.*
+
+---
